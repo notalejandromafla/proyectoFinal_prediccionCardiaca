@@ -94,29 +94,27 @@ flowchart LR
 
 ---
 
+
 ## 3. Decisiones de arquitectura (ADR)
 
-_Formato de cada ADR: Contexto → Decisión → Justificación → Consecuencias._
-
 ### ADR‑01: Enfoque de implementación
-- **Contexto:** _TODO (Integrante 2)_
-- **Decisión:** _ej. Python + scikit‑learn en Amazon SageMaker (AWS Academy), con scripts en `src/` y notebooks de JupyterLab para la exploración._
-- **Justificación:** _TODO_
-- **Consecuencias:** _TODO_
+- **Contexto:** El proyecto debe recorrer todo el workflow de Machine Learning (datos, entrenamiento, evaluación y predicción) de forma reproducible, y el equipo trabaja en los laboratorios de AWS Academy por la familiaridad que tenemos con ellos.
+- **Decisión:** Usar Python con scikit‑learn en Amazon SageMaker (Laboratorio 3.1 de AWS Academy). La lógica va en scripts dentro de `src/` y el proceso se muestra en notebooks de JupyterLab dentro de `notebooks/`.
+- **Justificación:** scikit‑learn es la librería estándar para modelos clásicos y ya viene en SageMaker. Separar scripts y notebooks permite repetir todo el proceso con pocos comandos y, a la vez, mostrar los resultados paso a paso.
+- **Consecuencias:** El proyecto depende del tiempo limite de los laboratorios, aunque también corre en cualquier computador con Python. Los scripts y los notebooks deben mantenerse coherentes entre sí.
 
 ### ADR‑02: Selección del modelo
-- **Contexto:** _TODO_
-- **Decisión:** _ej. Regresión Logística._
-- **Justificación:** _ej. problema de clasificación binaria, dataset pequeño, modelo interpretable (importante en salud)._
-- **Consecuencias:** _ej. puede no capturar relaciones no lineales._
+- **Contexto:** Se necesita predecir una variable binaria (enfermedad cardíaca sí o no) a partir de 13 variables clínicas, con un dataset pequeño de 297 pacientes, en un ámbito de salud donde las decisiones deben poder explicarse.
+- **Decisión:** Se usará Regresión Logística dentro de un Pipeline con `StandardScaler`, y se comparará con un modelo de referencia (`DummyClassifier`) que siempre predice la clase más frecuente.
+- **Justificación:** La Regresion Logistica es un modelo diseñado para clasificación binaria, funciona bien con pocos datos y es interpretable: sus coeficientes muestran qué variables influyen más en la predicción, algo clave para la transparencia en salud. El modelo de referencia permite comprobar que el modelo realmente aprende algo.
+- **Consecuencias:** Al ser un modelo lineal, puede no capturar relaciones complejas entre variables. Además, trata variables categóricas como `cp` y `thal` como numéricas, lo que se podría mejorar con codificación one‑hot.
 
 ### ADR‑03: Almacenamiento y despliegue
-- **Contexto:** _TODO_
-- **Decisión:** _ej. dataset descargado desde UCI y guardado en `data/`; modelo guardado con `joblib` en `models/`; ejecución en una instancia de notebook de SageMaker (`ml.t3.medium`); GitHub como almacenamiento principal y respaldo._
-- **Justificación:** _ej. el dataset es pequeño y no necesita una base de datos; `ml.t3.medium` basta para entrenar en segundos y cuida el presupuesto del laboratorio; GitHub protege el trabajo si la sesión de AWS se cierra._
-- **Consecuencias:** _ej. el modelo no queda expuesto como servicio web (no hay endpoint de SageMaker); para usarlo hay que ejecutar `src/predecir.py`._
+- **Contexto:** El Laboratorio 3.1 de AWS Academy se reinicia en cada sesión y tiene tiempo límite. Además, el profesor evalúa el proyecto desde el repositorio de GitHub.
+- **Decisión:** Guardar el dataset y los conjuntos de entrenamiento y prueba como archivos CSV en `data/`, guardar el modelo entrenado con `joblib` en `models/`, ejecutar todo en la instancia de notebook que provee el laboratorio y usar GitHub como almacenamiento principal.
+- **Justificación:** El dataset es pequeño, así que no necesita una base de datos. La instancia del laboratorio basta para entrenar en segundos sin crear recursos adicionales. GitHub conserva el trabajo aunque el laboratorio se reinicie y permite ejecutar el proyecto sin descargar de nuevo los datos.
+- **Consecuencias:** El modelo no se publica como servicio web (no hay un endpoint de SageMaker); para usarlo hay que ejecutar `src/predecir.py`. Cada sesión empieza clonando el repositorio, así que todo cambio debe subirse a GitHub antes de cerrar el laboratorio.
 
----
 
 ## 4. Calidad y evaluación del modelo
 
