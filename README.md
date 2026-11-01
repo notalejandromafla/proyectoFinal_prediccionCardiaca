@@ -85,8 +85,9 @@ C4Context
 
     Rel(medico, sistema_ml, "Ejecuta scripts/notebooks, ingresa variables de paciente y consulta métricas", "CLI / JupyterLab")
     Rel(sistema_ml, uci_repo, "Descarga el dataset clínico crudo (heart_disease.csv)", "HTTPS / ucimlrepo")
-    
-    mermaid```
+
+
+```mermaid
 flowchart LR
     U["👤 Profesional de salud / analista<br/>[Persona]<br/>Ingresa datos clínicos de un paciente<br/>y consulta la predicción"]
     S["🫀 Sistema de predicción cardíaca<br/>[Sistema de software]<br/>Prepara los datos, entrena el modelo<br/>y estima el riesgo de enfermedad"]
