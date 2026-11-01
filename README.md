@@ -6,7 +6,7 @@
 
 | Nombre | Rama | Rol |
 |---|---|---|
-| _Nombre integrante 1_ | `dev_xxxx` | Datos y ética |
+| _Pablo Alejandro Mafla Ayala_ | `dev_pmafla58` | Datos y ética |
 | _Nombre integrante 2_ | `dev_xxxx` | Modelo y evaluación |
 
 **Documentos del proyecto**
@@ -20,18 +20,27 @@
 ## 1. Problema, datos y solución
 
 ### 1.1 ¿Qué problema resolvemos?
-_TODO (Integrante 1): explicar en 3‑5 líneas el problema. Ejemplo: la enfermedad cardíaca es una de las principales causas de muerte; un modelo que ayude a identificar pacientes en riesgo puede apoyar (no reemplazar) el diagnóstico médico._
+Las enfermedades cardiovasculares constituyen una de las principales causas de mortalidad a nivel global, y su detección temprana resulta crítica para mejorar el pronóstico clínico de los pacientes. Este proyecto implementa un modelo supervisado de clasificación binaria basado en Regresión Logística para predecir la presencia o ausencia de enfermedad cardíaca (`target`: 1 = presencia, 0 = ausencia) a partir de 13 variables clínicas y demográficas del dataset Heart Disease (UCI). El sistema está diseñado estrictamente como una herramienta de soporte a la decisión clínica (triaje preliminar) y en ningún caso reemplaza el diagnóstico ni el criterio de un profesional médico.
 
 ### 1.2 ¿Con qué datos?
-_TODO (Integrante 1): nombre del dataset, fuente, número de pacientes y variables, variable objetivo. Tabla con las variables:_
+Se utiliza el dataset **Heart Disease (cohorte de Cleveland)**, proveniente del repositorio de **UCI Machine Learning**. El conjunto de datos original cuenta con **303 pacientes** y **13 variables predictoras** clínicas y demográficas. La variable objetivo a predecir es **`target`**.
 
 | Variable | Descripción | Tipo |
-|---|---|---|
+| :--- | :--- | :--- |
 | age | Edad en años | Numérica |
 | sex | Sexo (1 = hombre, 0 = mujer) | Categórica |
-| ... | ... | ... |
+| cp | Tipo de dolor de pecho (0 a 3) | Categórica |
+| trestbps | Presión arterial en reposo (mm Hg) | Numérica |
+| chol | Colesterol sérico (mg/dl) | Numérica |
+| fbs | Azúcar en sangre en ayunas > 120 mg/dl (1 = sí, 0 = no) | Categórica |
+| restecg | Resultados electrocardiográficos en reposo (0 a 2) | Categórica |
+| thalach | Frecuencia cardíaca máxima alcanzada | Numérica |
+| exang | Angina inducida por el ejercicio (1 = sí, 0 = no) | Categórica |
+| oldpeak | Depresión del ST inducida por el ejercicio | Numérica |
+| slope | Pendiente del segmento ST máximo durante el ejercicio (0 a 2) | Categórica |
+| ca | Número de vasos principales coloreados por fluoroscopía (0 a 3) | Numérica |
+| thal | Estado de talasemia (0 a 3) | Categórica |
 | target | 1 = tiene enfermedad cardíaca, 0 = no | Objetivo |
-
 ### 1.3 ¿Cómo funciona la solución?
 _TODO (Integrante 2): describir el flujo: carga → preparación → división entrenamiento/prueba → entrenamiento → evaluación → predicción con un paciente nuevo._
 
@@ -60,16 +69,23 @@ python src/predecir.py           # predice para un paciente nuevo
 ## 2. Alcance del sistema
 
 ### ✅ Qué hará el sistema
-- _TODO (Integrante 1): ej. estimar si un paciente tiene probabilidad de enfermedad cardíaca a partir de 13 variables clínicas._
-- _..._
-
+* Descargar, limpiar y particionar de forma estratificada (80% entrenamiento / 20% prueba) el dataset clínico de enfermedades cardíacas de la UCI.
+* Entrenar un pipeline reproducible que integra estandarización de características (`StandardScaler`) y un modelo de Regresión Logística interpretable.
+* Evaluar cuantitativamente el desempeño del clasificador frente a un modelo base (`DummyClassifier`) utilizando Accuracy, Precision, Recall, F1-Score y Matriz de Confusión.
+* Auditar la equidad del modelo desglosando métricas de sensibilidad (Recall) y precisión por sexo biológico.
+* Generar predicciones individuales con probabilidades asociadas para pacientes nuevos mediante consola.
+  
 ### ❌ Qué NO hará el sistema
-- _TODO (Integrante 1): ej. no reemplaza el diagnóstico de un médico; no está validado para población colombiana; no se usa con pacientes reales._
-- _..._
-
+* **No emitirá diagnósticos médicos definitivos** ni prescribirá tratamientos clínicos.
+* **No procesará historias clínicas con datos personales identificables (PII)** ni se conectará en tiempo real a sistemas hospitalarios (HIS/EHR).
+* **No operará como interfaz gráfica web ni API en producción continua**, limitándose a ejecución por scripts y notebooks en el entorno controlado de Amazon SageMaker.
+  
 ### 2.1 Diagrama C4 de contexto
 
-_TODO (Integrante 1): ajustar el diagrama. GitHub lo muestra como imagen automáticamente._
+*   **Usuario (Personal Médico / Investigador):** Ejecuta el análisis, evalúa métricas e interpreta la predicción clínica como apoyo diagnóstico mediante la consola/JupyterLab.
+*   **Sistema (Sistema ML de Predicción Cardíaca):** Preprocesa datos clínicos, entrena el modelo de Regresión Logística, evalúa equidad y estima la probabilidad de enfermedad cardíaca en AWS SageMaker.
+*   **Sistema Externo (UCI Machine Learning Repository):** Fuente de datos públicos que provee el dataset clínico crudo (Heart Disease, Cleveland, 303 registros) vía HTTPS.
+
 
 ```mermaid
 flowchart LR

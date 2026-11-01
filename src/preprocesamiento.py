@@ -1,39 +1,31 @@
-"""Pasos 1-3 del workflow: preparar los datos.   [Integrante 1]
-
-Salida esperada: data/train.csv y data/test.csv listos para el modelo.
-"""
-from pathlib import Path
-
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from datos import cargar_datos
-
-RAIZ = Path(__file__).resolve().parent.parent
-SEMILLA = 42
-
-
 def limpiar(df: pd.DataFrame) -> pd.DataFrame:
-    """TODO: tratar los valores faltantes (columnas 'ca' y 'thal').
-    Opciones: eliminar esas filas (son pocas) o imputar con la moda.
-    Documentar en el README cuál se eligió y por qué."""
-    return df
-
-
-def dividir(df: pd.DataFrame):
-    """División 80/20 estratificada: ambos conjuntos con la misma
-    proporción de enfermos y sanos."""
-    X = df.drop(columns="target")
-    y = df["target"]
-    return train_test_split(X, y, test_size=0.2, stratify=y, random_state=SEMILLA)
-
+    """
+    Elimina filas con valores faltantes (ca y thal tienen 6 filas nulas) 
+    para evitar introducir ruido por imputación artificial.
+    Asegura que la variable target sea estrictamente binaria.
+    """
+    df_limpio = df.dropna().copy()
+    df_limpio["target"] = (df_limpio["target"] > 0).astype(int)
+    return df_limpio
 
 if __name__ == "__main__":
-    df = limpiar(cargar_datos())
-    X_train, X_test, y_train, y_test = dividir(df)
-
-    # El escalado NO se hace aquí: va dentro del Pipeline del modelo
-    # para que se ajuste solo con entrenamiento (evita fuga de información).
-    X_train.assign(target=y_train).to_csv(RAIZ / "data" / "train.csv", index=False)
-    X_test.assign(target=y_test).to_csv(RAIZ / "data" / "test.csv", index=False)
-    print(f"Entrenamiento: {len(X_train)} pacientes | Prueba: {len(X_test)} pacientes")
+    print("Cargando datos crudos...")
+    df = pd.read_csv("data/heart_disease.csv")
+    
+    print("Limpiando datos...")
+    df_limpio = limpiar(df)
+    
+    print("Dividiendo en entrenamiento y prueba (80/20 estratificado)...")
+    train_df, test_df = train_test_split(
+        df_limpio,
+        test_size=0.20,
+        random_state=42,
+        stratify=df_limpio["target"]
+    )
+    
+    train_df.to_csv("data/train.csv", index=False)
+    test_df.to_csv("data/test.csv", index=False)
+    print("¡Listo! Archivos train.csv y test.csv guardados en la carpeta data/")
