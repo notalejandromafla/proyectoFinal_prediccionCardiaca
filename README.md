@@ -6,7 +6,7 @@
 
 | Nombre | Rama | Rol |
 |---|---|---|
-| _Pablo Alejandro Mafla Ayala_ | `dev_pmafla58` | Datos y ética |
+| Pablo Alejandro Mafla Ayala | `dev_pmafla58` | Datos y ética |
 | _Nombre integrante 2_ | `dev_xxxx` | Modelo y evaluación |
 
 **Documentos del proyecto**
@@ -23,13 +23,11 @@
 Las enfermedades cardiovasculares constituyen una de las principales causas de mortalidad a nivel global, y su detección temprana resulta crítica para mejorar el pronóstico clínico de los pacientes. Este proyecto implementa un modelo supervisado de clasificación binaria basado en Regresión Logística para predecir la presencia o ausencia de enfermedad cardíaca (`target`: 1 = presencia, 0 = ausencia) a partir de 13 variables clínicas y demográficas del dataset Heart Disease (UCI). El sistema está diseñado estrictamente como una herramienta de soporte a la decisión clínica (triaje preliminar) y en ningún caso reemplaza el diagnóstico ni el criterio de un profesional médico.
 
 ### 1.2 ¿Con qué datos?
-Se utiliza el dataset **Heart Disease (cohorte de Cleveland)**, proveniente del repositorio de **UCI Machine Learning**. El conjunto de datos original cuenta con **303 pacientes** y **13 variables predictoras** clínicas y demográficas. La variable objetivo a predecir es **`target`**.
-
 | Variable | Descripción | Tipo |
 | :--- | :--- | :--- |
 | age | Edad en años | Numérica |
 | sex | Sexo (1 = hombre, 0 = mujer) | Categórica |
-| cp | Tipo de dolor de pecho (0 a 3) | Categórica |
+| cp | Tipo de dolor de pecho (1 a 4) | Categórica |
 | trestbps | Presión arterial en reposo (mm Hg) | Numérica |
 | chol | Colesterol sérico (mg/dl) | Numérica |
 | fbs | Azúcar en sangre en ayunas > 120 mg/dl (1 = sí, 0 = no) | Categórica |
@@ -37,10 +35,11 @@ Se utiliza el dataset **Heart Disease (cohorte de Cleveland)**, proveniente del 
 | thalach | Frecuencia cardíaca máxima alcanzada | Numérica |
 | exang | Angina inducida por el ejercicio (1 = sí, 0 = no) | Categórica |
 | oldpeak | Depresión del ST inducida por el ejercicio | Numérica |
-| slope | Pendiente del segmento ST máximo durante el ejercicio (0 a 2) | Categórica |
+| slope | Pendiente del segmento ST máximo durante el ejercicio (1 a 3) | Categórica |
 | ca | Número de vasos principales coloreados por fluoroscopía (0 a 3) | Numérica |
-| thal | Estado de talasemia (0 a 3) | Categórica |
+| thal | Estado de talasemia (3, 6 y 7) 3=normal, 6=defecto fijo, 7=reversible | Categórica |
 | target | 1 = tiene enfermedad cardíaca, 0 = no | Objetivo |
+
 ### 1.3 ¿Cómo funciona la solución?
 _TODO (Integrante 2): describir el flujo: carga → preparación → división entrenamiento/prueba → entrenamiento → evaluación → predicción con un paciente nuevo._
 
