@@ -73,18 +73,9 @@ python src/predecir.py           # predice para un paciente nuevo
   
 ### 2.1 Diagrama C4 de contexto
 
-```mermaid
-C4Context
-    title Diagrama de Contexto (C4) — Sistema de Predicción de Enfermedad Cardíaca
-
-    Person(medico, "Personal Médico / Investigador", "Ejecuta el análisis, evalúa métricas e interpreta la predicción clínica como apoyo diagnóstico.")
-    
-    System(sistema_ml, "Sistema ML de Predicción Cardíaca", "Preprocesa datos clínicos, entrena el modelo de Regresión Logística, evalúa equidad y estima la probabilidad de enfermedad cardíaca (AWS SageMaker).")
-    
-    System_Ext(uci_repo, "UCI Machine Learning Repository", "Fuente externa de datos públicos que provee el dataset Heart Disease (Cleveland, 303 registros).")
-
-    Rel(medico, sistema_ml, "Ejecuta scripts/notebooks, ingresa variables de paciente y consulta métricas", "CLI / JupyterLab")
-    Rel(sistema_ml, uci_repo, "Descarga el dataset clínico crudo (heart_disease.csv)", "HTTPS / ucimlrepo")
+*   **Usuario (Personal Médico / Investigador):** Ejecuta el análisis, evalúa métricas e interpreta la predicción clínica como apoyo diagnóstico mediante la consola/JupyterLab.
+*   **Sistema (Sistema ML de Predicción Cardíaca):** Preprocesa datos clínicos, entrena el modelo de Regresión Logística, evalúa equidad y estima la probabilidad de enfermedad cardíaca en AWS SageMaker.
+*   **Sistema Externo (UCI Machine Learning Repository):** Fuente de datos públicos que provee el dataset clínico crudo (Heart Disease, Cleveland, 303 registros) vía HTTPS.
 
 
 ```mermaid
