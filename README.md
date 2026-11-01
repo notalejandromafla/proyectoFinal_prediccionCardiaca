@@ -53,11 +53,12 @@ La solución sigue el workflow básico de Machine Learning en cinco etapas, cada
 El proceso completo, con sus resultados, se puede ver en `notebooks/01_datos.ipynb` y `notebooks/02_modelo.ipynb`.
 
 ### 1.4 ¿Cómo demostramos que los resultados son válidos?
-- **Datos que el modelo nunca vio:** Llas métricas se calculan con 60 pacientes de prueba que no se usaron durante el entrenamiento.
+- **Datos que el modelo nunca vio:** Las métricas se calculan con 60 pacientes de prueba que no se usaron durante el entrenamiento.
 - **Sin fuga de información:** El escalado de las variables se ajusta solo con los datos de entrenamiento, porque va dentro del Pipeline del modelo.
 - **Comparación con un modelo de referencia:** El modelo se compara con un `DummyClassifier` que siempre predice la clase más frecuente, para comprobar que realmente aprende.
 - **Criterios de aceptación definidos:** El modelo se evalúa contra los criterios de la sección 4.5.
 - **Reproducibilidad:** La división usa una semilla fija (`random_state=42`), así que cualquier persona obtiene los mismos resultados al ejecutar los comandos de la sección 1.5.
+
 ### 1.5 Cómo ejecutar el proyecto
 
 El proyecto se desarrolló y ejecutó en **Amazon SageMaker** (instancia de notebook del Laboratorio 3.1 de AWS Academy, kernel `conda_python3`). También funciona en cualquier computador con Python 3.10 o superior.
@@ -160,7 +161,7 @@ Los 297 pacientes, después de la limpieza, se dividieron en **80 % para entrena
 - **Recall (0.786):** De los 28 pacientes realmente enfermos, el modelo detectó 22.
 - **F1‑Score (0.815):** Combina Precision y Recall en una sola medida; un valor alto indica un buen equilibrio entre ambas.
 
-**El Recall es la métrica prioritaria** En este problema: un falso negativo significa decirle a un paciente enfermo que está sano, lo que podría dejarlo sin tratamiento. Es un error mucho más grave que una falsa alarma.
+**El Recall es la métrica prioritaria** en este problema: un falso negativo significa decirle a un paciente enfermo que está sano, lo que podría dejarlo sin tratamiento. Es un error mucho más grave que una falsa alarma.
 
 ### 4.3 Matriz de confusión
 
@@ -180,6 +181,21 @@ El modelo de referencia siempre predice "sano", la clase más frecuente. Así ac
 - [x] **Supera al modelo de referencia en todas las métricas.** Se cumple.
 - [ ] **La diferencia de Recall entre hombres y mujeres es menor a 0.10.** Pendiente: se evalúa en el análisis de equidad.
 - [x] **El proyecto se ejecuta de principio a fin con los comandos de la sección 1.5.** Se cumple.
+
+---
+
+## 5. Riesgos técnicos
+
+| # | Riesgo | Impacto | Mitigación |
+|---|---|---|---|
+| R1 | Datos insuficientes (~300 pacientes) | _TODO_ | _TODO_ |
+| R2 | Fuga de información entre entrenamiento y prueba | _TODO_ | _TODO_ |
+| R3 | Sobreajuste | _TODO_ | _TODO_ |
+| R4 | Sesgo por sexo (mayoría de hombres) | _TODO_ | _TODO_ |
+| R5 | Limitaciones de cómputo del laboratorio de AWS (sesiones de 4 horas, presupuesto de $100, archivos fuera de `~/SageMaker` se pierden) | _TODO_ | _ej. push a GitHub en cada sesión, instancia pequeña y detenida al terminar, todo dentro de `~/SageMaker`_ |
+
+---
+
 
 ## 6. Glosario
 
