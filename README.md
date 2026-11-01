@@ -6,8 +6,8 @@
 
 | Nombre | Rama | Rol |
 |---|---|---|
-| _Pablo Alejandro Mafla Ayala_ | `dev_pmafla58` | Datos y ética |
-| _Nombre integrante 2_ | `dev_xxxx` | Modelo y evaluación |
+| Pablo Alejandro Mafla Ayala | `dev_pmafla58` | Datos y ética |
+| Santiago Chacón Serrano | `dev_schacon46` | Modelo y evaluación |
 
 **Documentos del proyecto**
 
@@ -42,14 +42,25 @@ Se utiliza el dataset **Heart Disease (cohorte de Cleveland)**, proveniente del 
 | thal | Estado de talasemia (0 a 3) | Categórica |
 | target | 1 = tiene enfermedad cardíaca, 0 = no | Objetivo |
 ### 1.3 ¿Cómo funciona la solución?
-_TODO (Integrante 2): describir el flujo: carga → preparación → división entrenamiento/prueba → entrenamiento → evaluación → predicción con un paciente nuevo._
+La solución sigue el workflow básico de Machine Learning en cinco etapas, cada una implementada en un script de `src/`:
+
+1. **Carga (`datos.py`):** Descarga el dataset Heart Disease desde UCI y lo guarda en `data/heart_disease.csv`.
+2. **Preparación (`preprocesamiento.py`):** Elimina los 6 registros con valores faltantes y divide los 297 pacientes restantes en entrenamiento (80 %) y prueba (20 %) de forma estratificada.
+3. **Entrenamiento (`modelo.py`):** Entrena un modelo de referencia (`DummyClassifier`) y una Regresión Logística dentro de un Pipeline con `StandardScaler`, y los guarda en `models/`.
+4. **Evaluación (`evaluacion.py`):** Calcula Accuracy, Precision, Recall y F1‑Score de ambos modelos con el conjunto de prueba y genera la matriz de confusión.
+5. **Predicción (`predecir.py`):** Usa el modelo entrenado para estimar la probabilidad de enfermedad de un paciente nuevo.
+
+El proceso completo, con sus resultados, se puede ver en `notebooks/01_datos.ipynb` y `notebooks/02_modelo.ipynb`.
 
 ### 1.4 ¿Cómo demostramos que los resultados son válidos?
-_TODO (Integrante 2): conjunto de prueba que el modelo nunca vio, comparación contra un modelo de referencia, criterios de aceptación (ver sección 4)._
-
+- **Datos que el modelo nunca vio:** Llas métricas se calculan con 60 pacientes de prueba que no se usaron durante el entrenamiento.
+- **Sin fuga de información:** El escalado de las variables se ajusta solo con los datos de entrenamiento, porque va dentro del Pipeline del modelo.
+- **Comparación con un modelo de referencia:** El modelo se compara con un `DummyClassifier` que siempre predice la clase más frecuente, para comprobar que realmente aprende.
+- **Criterios de aceptación definidos:** El modelo se evalúa contra los criterios de la sección 4.5.
+- **Reproducibilidad:** La división usa una semilla fija (`random_state=42`), así que cualquier persona obtiene los mismos resultados al ejecutar los comandos de la sección 1.5.
 ### 1.5 Cómo ejecutar el proyecto
 
-El proyecto se desarrolló y ejecutó en **Amazon SageMaker** (instancia de notebook `ml.t3.medium`, kernel `conda_python3`) dentro de AWS Academy Learner Lab. También funciona en cualquier computador con Python 3.10 o superior.
+El proyecto se desarrolló y ejecutó en **Amazon SageMaker** (instancia de notebook del Laboratorio 3.1 de AWS Academy, kernel `conda_python3`). También funciona en cualquier computador con Python 3.10 o superior.
 
 En la terminal de JupyterLab:
 
@@ -135,43 +146,40 @@ flowchart LR
 ## 4. Calidad y evaluación del modelo
 
 ### 4.1 Estrategia de separación de datos
-_TODO (Integrante 2): ej. 80 % entrenamiento / 20 % prueba, estratificado por la variable objetivo, `random_state=42`. El escalado se ajusta solo con entrenamiento para evitar fuga de información._
+Los 297 pacientes, después de la limpieza, se dividieron en **80 % para entrenamiento (237)** y **20 % para prueba (60)**. La división es **estratificada** por la variable objetivo, así que ambos conjuntos tienen la misma proporción de enfermos (46 %), y usa una semilla fija (`random_state=42`) para que sea reproducible. El escalado con `StandardScaler` va dentro del Pipeline del modelo, de modo que solo aprende de los datos de entrenamiento y no hay fuga de información hacia el conjunto de prueba.
 
 ### 4.2 Métricas
 
 | Modelo | Accuracy | Precision | Recall | F1‑Score |
 |---|---|---|---|---|
-| Referencia (DummyClassifier) | _ | _ | _ | _ |
-| Regresión Logística | _ | _ | _ | _ |
+| Referencia (DummyClassifier) | 0.533 | 0.000 | 0.000 | 0.000 |
+| Regresión Logística | 0.833 | 0.846 | 0.786 | 0.815 |
 
-_TODO (Integrante 2): interpretar cada métrica en una frase. Explicar por qué el Recall es la métrica prioritaria (un falso negativo = enfermo clasificado como sano)._
+- **Accuracy (0.833):** El modelo acierta en 50 de los 60 pacientes de prueba.
+- **Precision (0.846):** De los 26 pacientes que el modelo marcó como enfermos, 22 lo estaban realmente.
+- **Recall (0.786):** De los 28 pacientes realmente enfermos, el modelo detectó 22.
+- **F1‑Score (0.815):** Combina Precision y Recall en una sola medida; un valor alto indica un buen equilibrio entre ambas.
+
+**El Recall es la métrica prioritaria** En este problema: un falso negativo significa decirle a un paciente enfermo que está sano, lo que podría dejarlo sin tratamiento. Es un error mucho más grave que una falsa alarma.
 
 ### 4.3 Matriz de confusión
-_TODO (Integrante 2): insertar imagen `docs/img/matriz_confusion.png` y explicar VP, FP, VN y FN._
+
+![Matriz de confusión](docs/img/matriz_confusion.png)
+
+- **Verdaderos positivos (22):** Pacientes enfermos que el modelo detectó correctamente.
+- **Verdaderos negativos (28):** Pacientes sanos que el modelo identificó como sanos.
+- **Falsos positivos (4):** Pacientes sanos que el modelo marcó como enfermos. Generan una alarma innecesaria y exámenes adicionales.
+- **Falsos negativos (6):** Pacientes enfermos que el modelo marcó como sanos. Es el error más grave del modelo.
 
 ### 4.4 Comparación con el modelo de referencia
-_TODO (Integrante 2)_
+El modelo de referencia siempre predice "sano", la clase más frecuente. Así acierta el 53 % de los casos sin aprender nada, pero nunca detecta a un paciente enfermo (Recall 0). La Regresión Logística lo supera en todas las métricas: **30 puntos más de Accuracy** y un Recall de 0.786 frente a 0. Esto confirma que el modelo aprende patrones reales de los datos.
 
 ### 4.5 Criterios de aceptación
-- [ ] _ej. Recall ≥ 0.80 en el conjunto de prueba._
-- [ ] _ej. F1‑Score ≥ 0.75._
-- [ ] _ej. Supera al modelo de referencia en todas las métricas._
-- [ ] _ej. La diferencia de Recall entre hombres y mujeres es menor a 0.10._
-- [ ] _ej. El proyecto se ejecuta de principio a fin con los comandos de la sección 1.5._
-
----
-
-## 5. Riesgos técnicos
-
-| # | Riesgo | Impacto | Mitigación |
-|---|---|---|---|
-| R1 | Datos insuficientes (~300 pacientes) | _TODO_ | _TODO_ |
-| R2 | Fuga de información entre entrenamiento y prueba | _TODO_ | _TODO_ |
-| R3 | Sobreajuste | _TODO_ | _TODO_ |
-| R4 | Sesgo por sexo (mayoría de hombres) | _TODO_ | _TODO_ |
-| R5 | Limitaciones de cómputo del laboratorio de AWS (sesiones de 4 horas, presupuesto de $100, archivos fuera de `~/SageMaker` se pierden) | _TODO_ | _ej. push a GitHub en cada sesión, instancia pequeña y detenida al terminar, todo dentro de `~/SageMaker`_ |
-
----
+- [ ] **Recall ≥ 0.80 en el conjunto de prueba.** No se cumple: el Recall es 0.786, ligeramente por debajo. Se propone ajustar el umbral de decisión del modelo para priorizar la detección de enfermos (ver recomendaciones en el informe).
+- [x] **F1‑Score ≥ 0.75.** Se cumple: 0.815.
+- [x] **Supera al modelo de referencia en todas las métricas.** Se cumple.
+- [ ] **La diferencia de Recall entre hombres y mujeres es menor a 0.10.** Pendiente: se evalúa en el análisis de equidad.
+- [x] **El proyecto se ejecuta de principio a fin con los comandos de la sección 1.5.** Se cumple.
 
 ## 6. Glosario
 
