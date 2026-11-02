@@ -6,7 +6,12 @@ Entrena dos modelos y los guarda en models/:
 """
 from pathlib import Path
 
+import joblib
 import pandas as pd
+from sklearn.dummy import DummyClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 
 RAIZ = Path(__file__).resolve().parent.parent
 
@@ -19,16 +24,18 @@ def cargar_entrenamiento():
 if __name__ == "__main__":
     X_train, y_train = cargar_entrenamiento()
 
-    # TODO 1: modelo de referencia
-    #   from sklearn.dummy import DummyClassifier
-    #   baseline = DummyClassifier(strategy="most_frequent")
+    # Modelo de referencia: siempre predice la clase más frecuente (sano)
+    baseline = DummyClassifier(strategy="most_frequent")
+    baseline.fit(X_train, y_train)
 
-    # TODO 2: modelo final en un Pipeline (escalado + modelo)
-    #   from sklearn.pipeline import make_pipeline
-    #   from sklearn.preprocessing import StandardScaler
-    #   from sklearn.linear_model import LogisticRegression
-    #   modelo = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))
+    # Modelo final: escalado + regresión logística.
+    # El escalado va dentro del Pipeline para que se ajuste solo con
+    # los datos de entrenamiento (evita fuga de información).
+    modelo = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))
+    modelo.fit(X_train, y_train)
 
-    # TODO 3: entrenar ambos con .fit(X_train, y_train)
-    #         y guardarlos con joblib.dump(..., RAIZ / "models" / "....joblib")
-    raise NotImplementedError("Completar los TODO de modelo.py")
+    (RAIZ / "models").mkdir(exist_ok=True)
+    joblib.dump(baseline, RAIZ / "models" / "baseline.joblib")
+    joblib.dump(modelo, RAIZ / "models" / "modelo.joblib")
+
+    print(f"Modelos entrenados con {len(X_train)} pacientes y guardados en models/")
