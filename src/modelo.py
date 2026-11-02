@@ -1,34 +1,19 @@
-"""Pasos 4-5 del workflow: elegir y entrenar el modelo.   [Integrante 2]
-
-Entrena dos modelos y los guarda en models/:
-  - baseline.joblib : DummyClassifier (modelo de referencia)
-  - modelo.joblib   : Regresión Logística dentro de un Pipeline
-"""
-from pathlib import Path
-
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+import joblib
+import os
 
-RAIZ = Path(__file__).resolve().parent.parent
+# Cargar datos de entrenamiento
+train_df = pd.read_csv("data/train.csv")
+X_train = train_df.drop(columns=["target"])
+y_train = train_df["target"]
 
+# Entrenar el modelo
+print("Entrenando el modelo...")
+modelo = RandomForestClassifier(random_state=42)
+modelo.fit(X_train, y_train)
 
-def cargar_entrenamiento():
-    df = pd.read_csv(RAIZ / "data" / "train.csv")
-    return df.drop(columns="target"), df["target"]
-
-
-if __name__ == "__main__":
-    X_train, y_train = cargar_entrenamiento()
-
-    # TODO 1: modelo de referencia
-    #   from sklearn.dummy import DummyClassifier
-    #   baseline = DummyClassifier(strategy="most_frequent")
-
-    # TODO 2: modelo final en un Pipeline (escalado + modelo)
-    #   from sklearn.pipeline import make_pipeline
-    #   from sklearn.preprocessing import StandardScaler
-    #   from sklearn.linear_model import LogisticRegression
-    #   modelo = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))
-
-    # TODO 3: entrenar ambos con .fit(X_train, y_train)
-    #         y guardarlos con joblib.dump(..., RAIZ / "models" / "....joblib")
-    raise NotImplementedError("Completar los TODO de modelo.py")
+# Guardar el modelo
+os.makedirs("models", exist_ok=True)
+joblib.dump(modelo, "models/modelo.pkl")
+print("Modelo guardado en models/modelo.pkl")
