@@ -69,3 +69,17 @@ if __name__ == "__main__":
 
     # TODO 4 (Integrante 1 - equidad): repetir las métricas separando por sexo
     #   mujeres = X_test["sex"] == 0 ; hombres = X_test["sex"] == 1
+
+from sklearn.metrics import recall_score
+
+print("\n=== Fase 3: Análisis de Equidad por Sexo ===")
+# Generamos las predicciones explícitamente para este cálculo
+y_pred = modelo.predict(X_test)
+
+mask_mujeres = X_test['sex'] == 0
+recall_mujeres = recall_score(y_test[mask_mujeres], y_pred[mask_mujeres])
+print("Mujeres - Recall:", recall_mujeres)
+
+mask_hombres = X_test['sex'] == 1
+recall_hombres = recall_score(y_test[mask_hombres], y_pred[mask_hombres])
+print("\nHombres - Recall:", recall_hombres)

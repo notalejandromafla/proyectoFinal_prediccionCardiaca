@@ -29,7 +29,7 @@ Se utiliza el dataset **Heart Disease (cohorte de Cleveland)**, proveniente del 
 | :--- | :--- | :--- |
 | age | Edad en años | Numérica |
 | sex | Sexo (1 = hombre, 0 = mujer) | Categórica |
-| cp | Tipo de dolor de pecho (0 a 3) | Categórica |
+| cp | Tipo de dolor de pecho (1 a 4) | Categórica |
 | trestbps | Presión arterial en reposo (mm Hg) | Numérica |
 | chol | Colesterol sérico (mg/dl) | Numérica |
 | fbs | Azúcar en sangre en ayunas > 120 mg/dl (1 = sí, 0 = no) | Categórica |
@@ -37,10 +37,12 @@ Se utiliza el dataset **Heart Disease (cohorte de Cleveland)**, proveniente del 
 | thalach | Frecuencia cardíaca máxima alcanzada | Numérica |
 | exang | Angina inducida por el ejercicio (1 = sí, 0 = no) | Categórica |
 | oldpeak | Depresión del ST inducida por el ejercicio | Numérica |
-| slope | Pendiente del segmento ST máximo durante el ejercicio (0 a 2) | Categórica |
+| slope | Pendiente del segmento ST máximo durante el ejercicio (1 a 3) | Categórica |
 | ca | Número de vasos principales coloreados por fluoroscopía (0 a 3) | Numérica |
-| thal | Estado de talasemia (0 a 3) | Categórica |
+| thal | Estado de talasemia (3,6,7) | Categórica |
 | target | 1 = tiene enfermedad cardíaca, 0 = no | Objetivo |
+
+
 ### 1.3 ¿Cómo funciona la solución?
 La solución sigue el workflow básico de Machine Learning en cinco etapas, cada una implementada en un script de `src/`:
 
@@ -179,7 +181,7 @@ El modelo de referencia siempre predice "sano", la clase más frecuente. Así ac
 - [ ] **Recall ≥ 0.80 en el conjunto de prueba.** No se cumple: el Recall es 0.786, ligeramente por debajo. Se propone ajustar el umbral de decisión del modelo para priorizar la detección de enfermos (ver recomendaciones en el informe).
 - [x] **F1‑Score ≥ 0.75.** Se cumple: 0.815.
 - [x] **Supera al modelo de referencia en todas las métricas.** Se cumple.
-- [ ] **La diferencia de Recall entre hombres y mujeres es menor a 0.10.** Pendiente: se evalúa en el análisis de equidad.
+- [ ] **La diferencia de Recall entre hombres y mujeres es menor a 0.10.** No se cumple: la diferencia es de 0.133 (Hombres: 0.800 vs Mujeres: 0.667). Existe sesgo, aunque el atenuante es que solo hay 3 mujeres enfermas en la prueba.
 - [x] **El proyecto se ejecuta de principio a fin con los comandos de la sección 1.5.** Se cumple.
 
 ---
@@ -188,12 +190,11 @@ El modelo de referencia siempre predice "sano", la clase más frecuente. Así ac
 
 | # | Riesgo | Impacto | Mitigación |
 |---|---|---|---|
-| R1 | Datos insuficientes (~300 pacientes) | _TODO_ | _TODO_ |
-| R2 | Fuga de información entre entrenamiento y prueba | _TODO_ | _TODO_ |
-| R3 | Sobreajuste | _TODO_ | _TODO_ |
-| R4 | Sesgo por sexo (mayoría de hombres) | _TODO_ | _TODO_ |
-| R5 | Limitaciones de cómputo del laboratorio de AWS (sesiones de 4 horas, presupuesto de $100, archivos fuera de `~/SageMaker` se pierden) | _TODO_ | _ej. push a GitHub en cada sesión, instancia pequeña y detenida al terminar, todo dentro de `~/SageMaker`_ |
-
+| R1 | Datos insuficientes (~300 pacientes) | Modelo con poca capacidad de generalización en datos nuevos | Usar modelos simples (Regresión Logística) y evaluar con Recall/F1 |
+| R2 | Fuga de información entre entrenamiento y prueba | Métricas infladas y falsas expectativas del modelo | Separar los datos (train/test split) antes de cualquier exploración |
+| R3 | Sobreajuste | El modelo memoriza el entrenamiento y falla en la prueba | Evitar algoritmos muy complejos y mantener variables esenciales |
+| R4 | Sesgo por sexo (mayoría de hombres) | Riesgo de falsos negativos en pacientes femeninas | Evaluar equidad por género, documentar el sesgo y no usar autónomamente |
+| R5 | Limitaciones de cómputo del laboratorio de AWS (sesiones de 4 horas, presupuesto de $100, archivos fuera de `~/SageMaker` se pierden) | Pérdida irrecuperable de scripts, notebooks y modelos | Hacer push a GitHub tras cada sesión y trabajar siempre dentro de `~/SageMaker` |
 ---
 
 
