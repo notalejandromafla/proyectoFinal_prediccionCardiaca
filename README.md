@@ -202,21 +202,34 @@ El modelo de referencia siempre predice "sano", la clase más frecuente. Así ac
 
 | Término | Definición |
 |---|---|
-| Accuracy | _TODO_ |
-| Precision | _TODO_ |
-| Recall | _TODO_ |
-| F1‑Score | _TODO_ |
-| Matriz de confusión | _TODO_ |
-| Sobreajuste | _TODO_ |
-| Fuga de información | _TODO_ |
-| Modelo de referencia (baseline) | _TODO_ |
-| Amazon SageMaker | _TODO_ |
-| Instancia de notebook | _TODO_ |
-| ... | ... |
+| Accuracy | Proporción de predicciones correctas sobre el total de casos evaluados. |
+| Precision | De todos los casos que el modelo predijo como positivos (enfermos), proporción que realmente lo era. |
+| Recall (sensibilidad) | De todos los casos realmente positivos (enfermos), proporción que el modelo detectó. |
+| F1‑Score | Media armónica entre Precision y Recall; resume en un solo valor el equilibrio entre ambas. |
+| Matriz de confusión | Tabla que cruza los valores reales con las predicciones del modelo y muestra los verdaderos positivos, falsos positivos, verdaderos negativos y falsos negativos. |
+| Falso negativo | Paciente enfermo que el modelo clasifica como sano. En este proyecto es el error más grave. |
+| Falso positivo | Paciente sano que el modelo clasifica como enfermo. |
+| Regresión Logística | Modelo de clasificación que estima la probabilidad de que un caso pertenezca a una clase a partir de una combinación lineal de las variables. |
+| Modelo de referencia (baseline) | Modelo muy simple, en este caso uno que siempre predice la clase más frecuente, que sirve como punto de comparación para saber si el modelo real aporta valor. |
+| Pipeline | Secuencia de pasos de procesamiento y modelado que se entrena y aplica como un solo objeto, garantizando que los datos de prueba reciban el mismo tratamiento que los de entrenamiento. |
+| StandardScaler | Transformación que lleva cada variable a media 0 y desviación estándar 1, para que todas estén en una escala comparable. |
+| División estratificada | Separación de los datos en entrenamiento y prueba que mantiene la misma proporción de cada clase en ambos conjuntos. |
+| Sobreajuste | Situación en la que el modelo aprende de memoria los datos de entrenamiento, incluido su ruido, y por eso funciona mal con datos nuevos. |
+| Fuga de información | Uso accidental de información del conjunto de prueba durante el entrenamiento, lo que produce métricas engañosamente altas. |
+| Equidad (fairness) | Propiedad de un modelo cuyo desempeño no perjudica de forma sistemática a un grupo de personas, por ejemplo por sexo. |
+| ADR (Architecture Decision Record) | Documento breve que registra una decisión técnica, su contexto, su justificación y sus consecuencias. |
+| Diagrama C4 de contexto | Diagrama de arquitectura que muestra el sistema, sus usuarios y los sistemas externos con los que se relaciona. |
+| Amazon SageMaker | Servicio de AWS para construir, entrenar y desplegar modelos de Machine Learning en la nube. |
+| Instancia de notebook | Máquina virtual de SageMaker que ejecuta JupyterLab para trabajar con notebooks y scripts. |
 
 ## 7. Referencias
 
 - Janosi, A., Steinbrunn, W., Pfisterer, M., & Detrano, R. (1989). *Heart Disease* [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C52P4X
-- Pedregosa, F. et al. (2011). Scikit‑learn: Machine Learning in Python. *JMLR*, 12, 2825‑2830.
+- Pedregosa, F. et al. (2011). Scikit‑learn: Machine Learning in Python. *Journal of Machine Learning Research*, 12, 2825‑2830.
+- McKinney, W. (2010). Data Structures for Statistical Computing in Python. *Proceedings of the 9th Python in Science Conference*, 56‑61.
+- Hunter, J. D. (2007). Matplotlib: A 2D Graphics Environment. *Computing in Science & Engineering*, 9(3), 90‑95.
+- Waskom, M. L. (2021). seaborn: statistical data visualization. *Journal of Open Source Software*, 6(60), 3021.
 - Amazon Web Services. *Create an Amazon SageMaker notebook instance*. https://docs.aws.amazon.com/sagemaker/latest/dg/howitworks-create-ws.html
-- _TODO: agregar las demás fuentes usadas (documentación, artículos sobre ética, C4, ADR)._
+- Brown, S. *The C4 model for visualising software architecture*. https://c4model.com
+- Nygard, M. (2011). *Documenting Architecture Decisions*. https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions
+- Congreso de Colombia. (2012). *Ley Estatutaria 1581 de 2012, por la cual se dictan disposiciones generales para la protección de datos personales*.
